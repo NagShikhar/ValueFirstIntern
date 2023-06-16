@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require('cors');
 const { body, validationResult } = require('express-validator');
 
 const app = express();
@@ -13,13 +14,17 @@ app.set("view engine", "hbs");
 app.set("views", temp_path);
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.use(cors());
 
 app.get("/",(req,res) =>{
     res.render("index")
 });
 
 app.get("/new", (req, res) => {
-    res.send("new page")
+    let admindata={
+        adminname:"admin",
+        adminpassword:"pass123456",
+    }
 })
 app.post('/resdata',  async (req, res) => {
 
@@ -36,14 +41,19 @@ app.post('/resdata',  async (req, res) => {
         });
 
         const postdata = await resdata.save();
-        res.send(postdata);
+        res.status(200).send(postdata);
+        
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: 'Error saving data' });
+        res.status(400).json({ error: 'Error saving data' });
     }
 });
-
+module.exports=app;
 app.listen(3000, function () {
     console.log("Server is running on port 3000");
 });
+
+
+
+
 
